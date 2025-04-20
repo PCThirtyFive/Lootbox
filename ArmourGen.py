@@ -3,6 +3,7 @@ import namegen
 import json
 import sqlite3
 from namegen import generateAname
+from Database import Database
 
 slots = ["Head", "Shoulder", "Arm", "Hand", "Chest", "Pants", "Boots"]
 armourtypes = {"Heavy" :4,
@@ -132,6 +133,32 @@ def setbonuscalc():
     else:
         return None
 
+def save_to_db(self):
+    """
+    Saves the generated armour item to the SQLite database.
+    """
+    conn = sqlite3.connect("game.db")
+    cursor = conn.cursor()
+    owner = "player1"
+    # Insert the armour item data
+
+    #serialize lists to json strings
+    specproc_json = json.dumps(self.specproc) if self.specproc is not None else None
+    vuln_json = json.dumps(self.vuln) if self.vuln is not None else None
+    baseproc_json = json.dumps(self.baseproc) if self.baseproc is not None else None
+
+    cursor.execute("INSERT INTO armour (name, slot, type, typeval, specproc, specres, baseproc, baseres, vuln, "
+              "condition, socket, modifiers1, modifiers2, modifiers1v, modifiers2v, setbonus, rating, owner)"
+             "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                   (self.name, self.slot, self.type, self.typeval, specproc_json, self.specres, baseproc_json, self.baseres, vuln_json,
+                    self.condition, self.socket, self.modifiers1, self.modifiers2, self.modifiers1v, self.modifiers2v, self.setbonus,
+                    self.rating,owner))
+    # Commit the changes and close the connection
+    conn.commit()
+    conn.close()
+
+
+
 class armour:
     """
     Represents an armour item with various attributes.
@@ -174,11 +201,15 @@ class armour:
             modifiers2v_count = 0
         else:
             modifiers2v_count = self.modifiers2v
+        if self.specproc is None:
+            specproc_count = 0
+        else:
+            specproc_count = len(self.specproc)
 
-        self.rating = int(
-            ((self.condition / 95000) +
+        self.rating = int((
+            (self.condition / 95000) +
             (self.typeval / 4) +
-            (len(self.specproc) / 3) +  # Count the number of special procs
+            (specproc_count / 3) +  # Count the number of special procs
             (self.specres / 95) +
             (self.baseres / 75) +
             (self.socket / 2) +
@@ -189,6 +220,10 @@ class armour:
             ((setbonus_count / 1) + 0)) / 11 * 100)
 
         self.name = generateAname(self.type,self.slot,self.setbonus,self.rating,self.specproc)
+
+        save_to_db(self)
+
+
 
 def generate_armour():
     """
@@ -217,3 +252,11 @@ def print_armour(armour_item):
 
 for _ in range(100):
     print_armour(generate_armour()) #generate and print a random armour item
+
+#write the generated armour item to a json file and store in the database
+
+
+
+
+
+
