@@ -16,6 +16,21 @@ setbonus = ["Orion the Hunter", "The Beastmaster", "The Berserker", "The Gladiat
             "The Revenant", "The Lich", "The Necromancer", "The Warlock", "The Sorcerer", "The Wizard", "The Mage",
             "The Alchemist", "The Enchanter", "The Illusionist", "The Elementalist", "The Pyromancer", "The Cryomancer",
             "The Geomancer", "The Aeromancer", "The Hydromancer"]
+def genarmourtype():
+    """
+    Generates a random armour type.
+    """
+    lixy = random.randint(0, 100)
+
+    if lixy > 95:
+        return "Heavy"
+    elif lixy > 80:
+        return "Medium"
+    elif lixy > 50:
+        return "Light"
+    else:
+        return "Cloth"
+
 
 
 def setbonuscalc():
@@ -164,15 +179,15 @@ class armour:
     Represents an armour item with various attributes.
     """
     def __init__(self, name, slot, type, typeval, specproc, specres, baseproc, baseres, vuln, condition, socket, modifiers1, modifiers2, modifiers1v, modifiers2v, setbonus, rating):
-        self.condition = random.randint(10000, 95000)
-        self.type = random.choice(list(armourtypes.keys()))
+        self.condition = random.randint(35000, 95000)
+        self.type = genarmourtype()
         self.typeval = armourtypes[self.type]
         self.slot = random.choice(slots)
         self.specproc = specprocgen()
         self.specres = random.randint(76, 95)
         self.vuln = vulngen(self.specproc)
         self.baseproc = basegen(self.specproc, self.vuln)
-        self.baseres = random.randint(20, 75)
+        self.baseres = random.randint(45, 75)
         self.socket = random.randint(0, 2)
         self.modifiers1 = modifiergen()
         self.modifiers2 = modifiergen2()
@@ -206,18 +221,18 @@ class armour:
         else:
             specproc_count = len(self.specproc)
 
+        basecount = len(self.baseproc)
+
         self.rating = int((
-            (self.condition / 95000) +
-            (self.typeval / 4) +
-            (specproc_count / 3) +  # Count the number of special procs
-            (self.specres / 95) +
-            (self.baseres / 75) +
+            ((self.condition - 35000) / 60000) +
+            (((self.typeval / 4) * (((self.specres - 75) / 20) * specproc_count)) * 2)+
+            (((self.typeval / 4) * (((self.baseres - 45) / 30) * basecount)) * 2) +
             (self.socket / 2) +
-            ((modifiers1_count /2 + 0)) +
-            ((modifiers2_count / 2) + 0) +
-            ((modifiers1v_count / 25) + 0) +
-            ((modifiers2v_count / 25) + 0) +
-            ((setbonus_count / 1) + 0)) / 11 * 100)
+            ((modifiers1_count / 1)) +
+            ((modifiers2_count / 1)) +
+            ((modifiers1v_count / 25)) +
+            ((modifiers2v_count / 25)) +
+            ((setbonus_count / 1) * 3)) / 35 * 100)
 
         self.name = generateAname(self.type,self.slot,self.setbonus,self.rating,self.specproc)
 
@@ -237,6 +252,7 @@ def print_armour(armour_item):
     print(f"Name: {armour_item.name}")
     print(f"Slot: {armour_item.slot}")
     print(f"Type: {armour_item.type}")
+    print(f"Type Value: {armour_item.typeval}")
     print(f"Condition: {armour_item.condition}")
     print(f"Special Proc: {armour_item.specproc}")
     print(f"Special Resistance: {armour_item.specres}")
