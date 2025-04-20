@@ -26,13 +26,13 @@ def generateAname(type, slot, setbonus, rating, specproc):
         specprocn = str(specproc)  # Choose a random special proc from the list
 
     if type == "Heavy":
-        Material = ["Steel", "Iron", "Bronze", "Titanium", "Adamantium", "Obsidian"]
+        Material = ["Steel", "Titanium", "Adamantium", "Obsidian", "Starforged", "Nanocarbon", "Plasteel", "Tungsten", "Dragonforged", "Titanium Alloy"]
     elif type == "Medium":
-        Material = ["Composite", "Plate", "Composite", "Plate", "Scale Mail", "Brigandine", "Dragonhide", "Lamellar", "Cuirass", "Hauberk", "Studded Leather"]
+        Material = ["Composite", "Carbon" "Plate", "Composite", "Plate", "Iron" "Brigandine", "Dragonhide", "Studded Leather", "Exotic Alloy", "Ceramic Composite"]
     elif type == "Light":
-        Material = ["Leather", "Bone", "Hide", "Fur", "Scale", "Chainmail"]
+        Material = ["Leather", "Bone", "Hide", "Fur", "Scale", "Chainmail", "Scale Mail", "Bronze Plated", "Graphene", "Lightweight Composite"]
     elif type == "Cloth":
-        Material = ["Cotton", "Linen", "Wool", "Silk", "Velvet", "Satin", "Brocade"]
+        Material = ["Cotton", "Linen", "Wool", "Silk", "Velvet", "Satin", "Brocade", "Kevlar", "Micro-fibre"]
 
     if slot == "Head":
         slotname = random.choice(["Helm", "Crown", "Cap", "Mask"])
@@ -93,8 +93,8 @@ def generateAname(type, slot, setbonus, rating, specproc):
             returnname = (f"{ratingname} {materialname} {slotname} of {specprocn} {protectfiller}") #special proc but no set bonus
     else:
         if specprocn == 0:
-            returnname = (f"{ratingname} {materialname} {slotname} of {setbonusn}") #set bonus but no special proc
+            returnname = (f"{ratingname} {materialname} {slotname} of {setbonus}") #set bonus but no special proc
         else:
-            returnname = (f"{ratingname} {materialname} {slotname} of {setbonusn} and {specprocn} {protectfiller}") #set bonus and special proc
+            returnname = (f"{ratingname} {materialname} {slotname} of {setbonus} and {specprocn} {protectfiller}") #set bonus and special proc
 
     return returnname

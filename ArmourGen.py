@@ -225,14 +225,14 @@ class armour:
 
         self.rating = int((
             ((self.condition - 35000) / 60000) +
-            (((self.typeval / 4) * (((self.specres - 75) / 20) * specproc_count)) * 2)+
-            (((self.typeval / 4) * (((self.baseres - 45) / 30) * basecount)) * 2) +
+            (((((self.specres - 75) / 20) * specproc_count)) * 3)+
+            (((((self.baseres - 45) / 30) * basecount)) * 3) +
             (self.socket / 2) +
             ((modifiers1_count / 1)) +
             ((modifiers2_count / 1)) +
             ((modifiers1v_count / 25)) +
             ((modifiers2v_count / 25)) +
-            ((setbonus_count / 1) * 3)) / 35 * 100)
+            ((setbonus_count / 1) * 3)) / ((9 + (specproc_count * 3) + (basecount * 3))) * 100)
 
         self.name = generateAname(self.type,self.slot,self.setbonus,self.rating,self.specproc)
 
