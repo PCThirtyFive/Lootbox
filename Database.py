@@ -35,5 +35,31 @@ class Database:
         conn.commit()
         conn.close()
 
+    #create a table for storing weapon objects
+        conn = sqlite3.connect(self.db_name)
+        cursor = conn.cursor()
+        cursor.execute('''CREATE TABLE IF NOT EXISTS weapons (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT,
+                slot TEXT,
+                type TEXT,
+                typeval INTEGER,
+                specproc TEXT,
+                specres INTEGER,
+                baseproc TEXT,
+                baseres INTEGER,
+                vuln TEXT,
+                condition INTEGER,
+                socket INTEGER,
+                modifiers1 TEXT,
+                modifiers2 TEXT,
+                modifiers1v INTEGER,
+                modifiers2v INTEGER,
+                setbonus TEXT,
+                rating INTEGER,
+                owner TEXT)''')
+        conn.commit()
+        conn.close()
+
 
 Database()

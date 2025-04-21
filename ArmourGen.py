@@ -49,19 +49,22 @@ def specprocgen():
     Generates a special proc for the armour item.
     """
     # Define possible special procs
-    special_procs = ["Kinetic", "Heat","Energy", "Projectile", "Electric","Cold","Acid","Explosive","Exotic","Dark","Sonic","Water","Devine"]
+    special_procs = ["Kinetic", "Heat", "Energy", "Projectile", "Electric", "Cold", "Acid", "Explosive", "Exotic",
+                     "Dark", "Sonic", "Water", "Divine"]
     #choose 1, 2 or 3 special procs based on a weighting system
     spng = random.randint(0, 100)
     if spng < 5: # 5% chance of getting no special
-        return None
+        result = None
     elif spng < 45: # 40% chance of getting one special
-        return random.choice(special_procs)
+        result = [random.choice(special_procs)]
     elif spng < 90: # 45% chance of getting two specials
-        return random.sample(special_procs, 2)
+        result = random.sample(special_procs, 2)
     else: # 10% chance of getting three specials
-        return random.sample(special_procs, 3)
+        result = random.sample(special_procs, 3)
 
-def modifiergen():
+    return result
+
+def modifiergen(provrating):
     """
     Generates a random modifier for the armour item.
     """
@@ -69,12 +72,16 @@ def modifiergen():
     modifiers = ["Critical Hit Chance", "Critical Hit Damage", "Two Handed Melee Speed", "One Handed Melee Speed", "Unarmed Melee Speed",
                  "Pistol Attack Speed", "Carbine Attack Speed","Rifle Attack Speed", "Heavy Weapon Speed", "Melee Defence", "Ranged Toughness"]
     ded = random.randint(0, 100)
-    if ded > 96:
+    if provrating > 80 and ded > 20:
+        return random.choice(modifiers)
+    elif provrating > 70 and ded > 35:
+        return random.choice(modifiers)
+    elif ded > 80:
         return random.choice(modifiers)
     else:
         return None
 
-def modifiergen2():
+def modifiergen2(provrating):
     """
     Generates a random modifier for the armour item.
     """
@@ -82,23 +89,35 @@ def modifiergen2():
     modifiers = ["Critical Hit Chance", "Critical Hit Accuracy", "Two Handed Melee Accuracy", "One Handed Melee Accuracy", "Unarmed Melee Accuracy",
                  "Pistol Attack Accuracy", "Carbine Attack Accuracy","Rifle Attack Accuracy", "Heavy Weapon Accuracy", "Ranged Defence", "Melee Toughness"]
     ded = random.randint(0, 100)
-    if ded > 96:
+    if provrating > 80 and ded > 35:
+        return random.choice(modifiers)
+    elif provrating > 70 and ded > 65:
+        return random.choice(modifiers)
+    elif ded > 95:
         return random.choice(modifiers)
     else:
         return None
 
-def modifiervalgen(modifier):
+def modifiervalgen(modifier, provrating):
 
     if modifier == None:
         return None
     else:
-        return random.randint(1, 25)
+        if provrating > 78:
+            return random.randint(19, 25)
+        elif provrating > 68:
+            return random.randint(17, 23)
+        elif provrating > 58:
+            return random.randint(15, 21)
+        else:
+            return random.randint(1, 17)
 
 def vulngen(specproc):
     """
     Generates a random number of vulnerability for the armour item 0-3:
     """
-    vulnist = ["Kinetic", "Heat","Energy", "Projectile", "Electric","Cold","Acid","Explosive","Exotic","Dark","Sonic","Water","Devine"]
+    vulnist = ["Kinetic", "Heat", "Energy", "Projectile", "Electric", "Cold", "Acid", "Explosive", "Exotic", "Dark",
+               "Sonic", "Water", "Devine"]
     specproc1 = specproc
     # Remove the special proc from the list of possible vulnerabilities
     if specproc1 is not None:
@@ -137,13 +156,19 @@ def basegen(specproc, vuln):
     # Choose a random base resistance from the list
     return base_resistances
 
-def setbonuscalc():
+def setbonuscalc(provrating):
     """
     Generates a set bonus for the armour item.
     """
+    sbng = random.randint(0, 100)
     #check whether a setbonus should be applied
-    if random.randint(0, 10) == 5:
-    # Choose a random set bonus from the list
+    if provrating > 79 and sbng > 20:
+        return random.choice(setbonus)
+    elif provrating > 69 and sbng > 35:
+        return random.choice(setbonus)
+    elif provrating > 59 and sbng > 75:
+        return random.choice(setbonus)
+    elif sbng > 96:
         return random.choice(setbonus)
     else:
         return None
@@ -178,63 +203,73 @@ class armour:
     """
     Represents an armour item with various attributes.
     """
-    def __init__(self, name, slot, type, typeval, specproc, specres, baseproc, baseres, vuln, condition, socket, modifiers1, modifiers2, modifiers1v, modifiers2v, setbonus, rating):
-        self.condition = random.randint(35000, 95000)
-        self.type = genarmourtype()
+    def __init__(self, name=None, slot=None, type=None, typeval=None, specproc=None, specres=None, baseproc=None, baseres=None, vuln=None, condition=None, socket=None, modifiers1=None, modifiers2=None, modifiers1v=None, modifiers2v=None, setbonus=None, rating=None):
+
+        self.type = type if type is not None else genarmourtype()
         self.typeval = armourtypes[self.type]
-        self.slot = random.choice(slots)
-        self.specproc = specprocgen()
-        self.specres = random.randint(76, 95)
-        self.vuln = vulngen(self.specproc)
-        self.baseproc = basegen(self.specproc, self.vuln)
-        self.baseres = random.randint(45, 75)
-        self.socket = random.randint(0, 2)
-        self.modifiers1 = modifiergen()
-        self.modifiers2 = modifiergen2()
-        self.modifiers1v = modifiervalgen(self.modifiers1)
-        self.modifiers2v = modifiervalgen(self.modifiers2)
-        self.setbonus = setbonuscalc()
+        self.slot = slot if slot is not None else random.choice(slots)
+        self.specproc = specproc if specproc is not None else specprocgen()
+        self.specres = specres if specres is not None else random.randint(76, 95)
+        self.vuln = vuln if vuln is not None else vulngen(self.specproc)
+        self.baseproc = baseproc if baseproc is not None else basegen(self.specproc, self.vuln)
+        self.baseres = baseres if baseres is not None else random.randint(45, 75)
+        specproc_count = len(self.specproc) if self.specproc is not None else 0
+        basecount = len(self.baseproc) if self.baseproc is not None else 0
+
+        provrating = int(
+            (((((self.specres - 75) + (self.baseres - 45)) / 50) * 2) +
+            (specproc_count / 3) +
+            ((basecount + specproc_count) / 13)) / 4 * 100)
+
+
+        # Calculate the condition based on the provided rating
+        if condition is None:
+            if provrating > 70:
+                self.condition = random.randint(85000, 120000)
+            elif provrating > 60:
+                self.condition = random.randint(60000, 95000)
+            elif provrating > 50:
+                self.condition = random.randint(50000, 85000)
+            else:
+                self.condition = random.randint(10000, 75000)
+        else:
+            self.condition = condition
+
+        # Calculate the socket based on the provided rating
+        if socket is None:
+            if provrating > 65:
+                self.socket = random.randint(1, 2)
+            else:
+                self.socket = random.randint(0, 1)
+        else:
+            self.socket = socket
+
+        self.modifiers1 = modifiers1 if modifiers1 is not None else modifiergen(provrating)
+        self.modifiers2 = modifiers2 if modifiers2 is not None else modifiergen2(provrating)
+        self.modifiers1v = modifiers1v if modifiers1v is not None else modifiervalgen(self.modifiers1, provrating)
+        self.modifiers2v = modifiers2v if modifiers2v is not None else modifiervalgen(self.modifiers2, provrating)
+        self.setbonus = setbonus if setbonus is not None else setbonuscalc(provrating)
 
         #for rating calculation
-        if self.modifiers1 is None:
-            modifiers1_count = 0
-        else:
-            modifiers1_count = 1
-        if self.modifiers2 is None:
-            modifiers2_count = 0
-        else:
-            modifiers2_count = 1
-        if self.setbonus is None:
-            setbonus_count = 0
-        else:
-            setbonus_count = 1
-        if self.modifiers1v is None:
-            modifiers1v_count = 0
-        else:
-            modifiers1v_count = self.modifiers1v
-        if self.modifiers2v is None:
-            modifiers2v_count = 0
-        else:
-            modifiers2v_count = self.modifiers2v
-        if self.specproc is None:
-            specproc_count = 0
-        else:
-            specproc_count = len(self.specproc)
+        modifiers1_count = 1 if self.modifiers1 is not None else 0
+        modifiers2_count = 1 if self.modifiers2 is not None else 0
+        setbonus_count = 1 if self.setbonus is not None else 0
+        modifiers1v_count = self.modifiers1v if self.modifiers1v is not None else 0
+        modifiers2v_count = self.modifiers2v if self.modifiers2v is not None else 0
 
-        basecount = len(self.baseproc)
 
         self.rating = int((
-            ((self.condition - 35000) / 60000) +
-            (((((self.specres - 75) / 20) * specproc_count)) * 3)+
-            (((((self.baseres - 45) / 30) * basecount)) * 3) +
-            (self.socket / 2) +
-            ((modifiers1_count / 1)) +
-            ((modifiers2_count / 1)) +
-            ((modifiers1v_count / 25)) +
-            ((modifiers2v_count / 25)) +
-            ((setbonus_count / 1) * 3)) / ((9 + (specproc_count * 3) + (basecount * 3))) * 100)
+                                  (self.condition / 120000) +
+                                  (((((self.specres - 75) / 20) * specproc_count)) * 3)+
+                                  (((((self.baseres - 45) / 30) * basecount)) * 3) +
+                                  (self.socket / 2) +
+                                  ((modifiers1_count / 1)) +
+                                  ((modifiers2_count / 1)) +
+                                  ((modifiers1v_count / 25)) +
+                                  ((modifiers2v_count / 25)) +
+                                  ((setbonus_count / 1) * 3)) / ((9 + (specproc_count * 3) + (basecount * 3))) * 100)
 
-        self.name = generateAname(self.type,self.slot,self.setbonus,self.rating,self.specproc)
+        self.name = name if name is not None else generateAname(self.type,self.slot,self.setbonus,self.rating,self.specproc)
 
         save_to_db(self)
 
@@ -266,7 +301,7 @@ def print_armour(armour_item):
     print(f"Rating: {armour_item.rating}")
 
 
-for _ in range(100):
+for _ in range(50):
     print_armour(generate_armour()) #generate and print a random armour item
 
 #write the generated armour item to a json file and store in the database

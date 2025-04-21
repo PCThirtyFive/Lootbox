@@ -5,8 +5,12 @@ def generateAname(type, slot, setbonus, rating, specproc):
     Generates a name for an armour item based on its type and slot.
     """
     # Define possible prefixes and suffixes for the armour item name
-    sufffixes = ["Ancient", "Mystic", "Cursed", "Enchanted", "Divine", "Fabled", "Legendary", "Epic", "Rare", "Common", "Uncommon", "Mythic", "Heroic", "Arcane", "Celestial", "Infernal", "Ethereal", "Spectral", "Phantom", "Wraith", "Void", "Titanic", "Dragonkin", "Demonic", "Celestial", "Elemental", "Arcane", "Runic", "Shadow", "Lightbringer", "Darkbane", "Stormforged",
-                    "Frostforged", "Flameforged", "Earthshatter", "Thunderstrike", "Bloodbound", "Soulbound", "Spiritbound", "Nightfall", "Dawnbringer", "Twilight", "Starforged", "Sunfire", "Moonshadow", "Voidwalker", "Stormcaller", "Firewalker", "Icebreaker", "Earthwarden"]
+    sufffixes = ["Ancients", "Mystics", "Cursed", "Enchanted", "Divine", "Fabled", "Arcane", "Ethereal", "Spectral",
+                 "Phantom Lord", "Wraith King", "Void Dweller", "Titan", "Dragonkin", "Elementals", "Arcane",
+                 "Runic", "Shadow", "Lightbringer", "Darkbane", "Stormforged", "Frostforge", "Flameforge",
+                 "Earthshatter", "Thunderstriker", "Bloodbound", "Soulbound", "Spiritbound", "Nightfall",
+                 "Dawnbringer", "Twilight", "Starforged", "Sunfire", "Moonshadow", "Voidwalker", "Stormcaller",
+                 "Firewalker", "Icebreaker", "Earthwarden"]
     #suffixes = ["of Power", "of Agility", "of Strength", "of Wisdom", "of Resilience", "of Fortitude", "of Endurance", "of Protection", "of the Guardian", "of the Sentinel", "of the Protector", "of the Defender", "of the Champion", "of the Conqueror", "of the Vanquisher", "of the Slayer", "of the Hunter", "of the Beastmaster", "of the Warlord", "of the Berserker", "of the Gladiator", "of the Duelist", "of the Assassin", "of the Rogue", "of the Trickster", "of the Shadow", "of the Nightblade", "of the Phantom", "of the Specter"
                #     "of the Wraith", "of the Revenant", "of the Lich", "of the Necromancer", "of the Warlock", "of the Sorcerer", "of the Wizard", "of the Mage", "of the Alchemist", "of the Enchanter", "of the Illusionist", "of the Elementalist", "of the Pyromancer", "of the Cryomancer", "of the Geomancer", "of the Aeromancer", "of the Hydromancer", "of the Chronomancer", "of the Necromancer", "of the Summoner"]
 
@@ -23,21 +27,25 @@ def generateAname(type, slot, setbonus, rating, specproc):
     elif sum(1 for proc in specproc) == 3:
         specprocn = str(random.choice(specproc))
     else:
-        specprocn = str(specproc)  # Choose a random special proc from the list
+        specprocn = str(random.choice(specproc))   # Choose a random special proc from the list
 
     if type == "Heavy":
-        Material = ["Steel", "Titanium", "Adamantium", "Obsidian", "Starforged", "Nanocarbon", "Plasteel", "Tungsten", "Dragonforged", "Titanium Alloy"]
+        Material = ["Steel", "Titanium", "Adamantium", "Obsidian", "Starforged", "Nanocarbon", "Plasteel", "Tungsten",
+                    "Dragonforged", "Titanium Alloy"]
     elif type == "Medium":
-        Material = ["Composite", "Carbon" "Plate", "Composite", "Plate", "Iron" "Brigandine", "Dragonhide", "Studded Leather", "Exotic Alloy", "Ceramic Composite"]
+        Material = ["Composite", "Carbon" "Plate", "Composite", "Plate", "Iron", "Brigandine", "Dragonhide",
+                    "Studded Leather", "Exotic Alloy", "Ceramic Composite"]
     elif type == "Light":
-        Material = ["Leather", "Bone", "Hide", "Fur", "Scale", "Chainmail", "Scale Mail", "Bronze Plated", "Graphene", "Lightweight Composite"]
+        Material = ["Leather", "Bone", "Hide", "Fur", "Scale", "Chainmail", "Scale Mail", "Bronze Plated", "Graphene",
+                    "Lightweight Composite"]
     elif type == "Cloth":
         Material = ["Cotton", "Linen", "Wool", "Silk", "Velvet", "Satin", "Brocade", "Kevlar", "Micro-fibre"]
 
     if slot == "Head":
         slotname = random.choice(["Helm", "Crown", "Cap", "Mask"])
     elif slot == "Shoulder":
-        slotname = random.choice(["Pauldrons", " Spaulders", "Shoulder Guards", "Shoulder Pads", "Shoulder Plates", "Shoulder Armor", "Shoulder Capes", "Shoulder Cloaks"])
+        slotname = random.choice(["Pauldrons", " Spaulders", "Shoulder Guards", "Shoulder Pads", "Shoulder Plates",
+                                  "Shoulder Armor", "Shoulder Capes", "Shoulder Cloaks"])
     elif slot == "Arm":
         slotname = random.choice(["Bracers", "Arm Guards", "Bicep Guards", "Sleeves", "Vambraces", "Cuffs", "Armlets"])
     elif slot == "Hand":
@@ -86,15 +94,61 @@ def generateAname(type, slot, setbonus, rating, specproc):
     # Combine them with the type and slot to create the item name
     materialname = random.choice(Material)
 
-    if setbonus == None:
-        if specprocn == 0:
-            returnname = (f"{ratingname} {materialname} {slotname}") #no set bonus or special proc
+    if rating > 60:
+        if setbonus == None:
+            if specprocn == 0:
+                returnname = (f"{ratingname} {materialname} {slotname}") #no set bonus or special proc
+            else:
+                str(specprocn)
+                returnname = (f"{ratingname} {materialname} {slotname} of {specprocn} {protectfiller}") #special proc but no set bonus
         else:
-            returnname = (f"{ratingname} {materialname} {slotname} of {specprocn} {protectfiller}") #special proc but no set bonus
+                returnname = (f"{ratingname} {materialname} {slotname} of {setbonus}") #set bonus but no special proc
+
     else:
-        if specprocn == 0:
-            returnname = (f"{ratingname} {materialname} {slotname} of {setbonus}") #set bonus but no special proc
+        if setbonus == None:
+            returnname = (f"{ratingname} {materialname} {slotname}")
         else:
-            returnname = (f"{ratingname} {materialname} {slotname} of {setbonus} and {specprocn} {protectfiller}") #set bonus and special proc
+            returnname = (f"{ratingname} {materialname} {slotname} of {setbonus}") #set bonus but no special proc
 
     return returnname
+
+
+def generateWname(type2, AP, rating, slot):
+
+    if type2 == "Launcher":
+        type2n = random.choice(["Rocket Launcher", "Missile Launcher", "Grenade Launcher", "Flame Thrower", "Plasma Emitter",
+                     "Energy Cannon", "Pulse Blaster", "Shockwave Emitter"])
+    elif type2 == "Rifle":
+        type2n = ["Assault Rifle", "Sniper Rifle", "Battle Rifle",  "Marksman Rifle"]
+    elif type2 == "Pistol":
+        type2n = ["Revolver", "Semi-Automatic Pistol", "Automatic Pistol", "Submachine Gun", "Blaster"]
+    elif type2 == "Carbine":
+        type2n = ["Carbine", "Compact Carbine", "Submachine Carbine", "Assault Carbine", "Battle Carbine"]
+    elif type2 == "Longbow":
+        type2n = ["Longbow", "Compound Bow", "Recurve Bow"]
+    elif type2 == "Crossbow":
+        type2n = ["Crossbow", "Repeating Crossbow", "HandCrossbow"]
+    elif type2 == "Bow":
+        type2n = ["Bow", "Shortbow", "Composite Bow"]
+    elif type2 == "Dagger":
+        type2n = ["Dagger", "Knife", "Dirk", "Kris"]
+    elif type2 == "Blade":
+        type2n = ["Blade", "Shank", "Sabre", "Scimitar"]
+    elif type2 == "Sword":
+        type2n = ["Sword", "Broadsword", "Curved Sword", "Rapier"]
+    elif type2 == "Duster":
+        type2n = ["Knuckle Duster" "Brass Knuckles", "Knuckle Blade"]
+    elif type2 == "Fist":
+        type2n = ["Fist", "Punching Dagger", "Fist Blade"]
+    elif type2 == "Knuckler":
+        type2n = ["Knuckler", "Vibro Knuckler", "Power Fist"]
+    elif type2 == "Polearm":
+        type2n = ["Polearm", "Halberd", "Glaive"]
+    elif type2 == "Lance":
+        type2n = ["Lance", "Javelin", "Pike"]
+    elif type2 == "Spear":
+        type2n = ["Spear", "Trident", "Harpoon"]
+    elif type2 == "Warhammer":
+        type2n = ["Warhammer", "Maul", "War Club"]
+
+
