@@ -41,23 +41,21 @@ class Database:
         cursor.execute('''CREATE TABLE IF NOT EXISTS weapons (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 name TEXT,
-                slot TEXT,
                 type TEXT,
-                typeval INTEGER,
-                specproc TEXT,
-                specres INTEGER,
-                baseproc TEXT,
-                baseres INTEGER,
-                vuln TEXT,
+                type2 TEXT,
+                AP TEXT,
+                dmgtype TEXT,
+                Speed FLOAT,
+                Accuracy INTEGER,
+                Maxdmg INTEGER,
+                Mindmg INTEGER,
+                critchance INTEGER,
+                critdamage INTEGER,
+                slot TEXT,
                 condition INTEGER,
-                socket INTEGER,
-                modifiers1 TEXT,
-                modifiers2 TEXT,
-                modifiers1v INTEGER,
-                modifiers2v INTEGER,
-                setbonus TEXT,
-                rating INTEGER,
-                owner TEXT)''')
+                owner TEXT,
+                special TEXT,
+                rating INTEGER)''')
         conn.commit()
         conn.close()
 

@@ -116,39 +116,82 @@ def generateAname(type, slot, setbonus, rating, specproc):
 def generateWname(type2, AP, rating, slot):
 
     if type2 == "Launcher":
-        type2n = random.choice(["Rocket Launcher", "Missile Launcher", "Grenade Launcher", "Flame Thrower", "Plasma Emitter",
-                     "Energy Cannon", "Pulse Blaster", "Shockwave Emitter"])
+        type2n = str(random.choice(["Rocket Launcher", "Missile Launcher", "Grenade Launcher", "Flame Thrower", "Plasma Emitter",
+                     "Energy Cannon", "Pulse Blaster", "Shockwave Emitter"]))
     elif type2 == "Rifle":
-        type2n = ["Assault Rifle", "Sniper Rifle", "Battle Rifle",  "Marksman Rifle"]
+        type2n = str(random.choice(["Assault Rifle", "Sniper Rifle", "Battle Rifle",  "Marksman Rifle"]))
     elif type2 == "Pistol":
-        type2n = ["Revolver", "Semi-Automatic Pistol", "Automatic Pistol", "Submachine Gun", "Blaster"]
+        type2n = str(random.choice(["Revolver", "Semi-Automatic Pistol", "Automatic Pistol", "Submachine Gun", "Blaster"]))
     elif type2 == "Carbine":
-        type2n = ["Carbine", "Compact Carbine", "Submachine Carbine", "Assault Carbine", "Battle Carbine"]
+        type2n = str(random.choice(["Carbine", "Compact Carbine", "Submachine Carbine", "Assault Carbine", "Battle Carbine"]))
     elif type2 == "Longbow":
-        type2n = ["Longbow", "Compound Bow", "Recurve Bow"]
+        type2n = str(random.choice(["Longbow", "Compound Bow", "Recurve Bow"]))
     elif type2 == "Crossbow":
-        type2n = ["Crossbow", "Repeating Crossbow", "HandCrossbow"]
+        type2n = str(random.choice(["Crossbow", "Repeating Crossbow", "HandCrossbow"]))
     elif type2 == "Bow":
-        type2n = ["Bow", "Shortbow", "Composite Bow"]
+        type2n = str(random.choice(["Bow", "Shortbow", "Composite Bow"]))
     elif type2 == "Dagger":
-        type2n = ["Dagger", "Knife", "Dirk", "Kris"]
+        type2n = str(random.choice(["Dagger", "Knife", "Dirk", "Kris"]))
     elif type2 == "Blade":
-        type2n = ["Blade", "Shank", "Sabre", "Scimitar"]
+        type2n = str(random.choice(["Blade", "Shank", "Sabre", "Scimitar"]))
     elif type2 == "Sword":
-        type2n = ["Sword", "Broadsword", "Curved Sword", "Rapier"]
+        type2n = str(random.choice(["Sword", "Broadsword", "Curved Sword", "Rapier"]))
     elif type2 == "Duster":
-        type2n = ["Knuckle Duster" "Brass Knuckles", "Knuckle Blade"]
+        type2n = str(random.choice(["Knuckle Duster" "Brass Knuckles", "Knuckle Blade"]))
     elif type2 == "Fist":
-        type2n = ["Fist", "Punching Dagger", "Fist Blade"]
+        type2n = str(random.choice(["Fist", "Punching Dagger", "Fist Blade"]))
     elif type2 == "Knuckler":
-        type2n = ["Knuckler", "Vibro Knuckler", "Power Fist"]
+        type2n = str(random.choice(["Knuckler", "Vibro Knuckler", "Power Fist"]))
     elif type2 == "Polearm":
-        type2n = ["Polearm", "Halberd", "Glaive"]
+        type2n = str(random.choice(["Polearm", "Halberd", "Glaive"]))
     elif type2 == "Lance":
-        type2n = ["Lance", "Javelin", "Pike"]
+        type2n = str(random.choice(["Lance", "Javelin", "Pike"]))
     elif type2 == "Spear":
-        type2n = ["Spear", "Trident", "Harpoon"]
+        type2n = str(random.choice(["Spear", "Trident", "Harpoon"]))
     elif type2 == "Warhammer":
-        type2n = ["Warhammer", "Maul", "War Club"]
+        type2n = str(random.choice(["Warhammer", "Maul", "War Club"]))
+    elif type2 == "Axe":
+        type2n = str(random.choice(["Axe", "Battle Axe", "Hatchet", "Tomahawk"]))
+    elif type2 == "Greatsword":
+        type2n = str(random.choice(["Greatsword", "Claymore", "Zweihander"]))
 
+    if rating > 90:
+        ratingname = "Ascended"
+    elif rating > 85:
+        ratingname = "Celestial"
+    elif rating > 80:
+        ratingname = "Exalted"
+    elif rating > 75:
+        ratingname = "Mythic"
+    elif rating > 70:
+        ratingname = "Legendary"
+    elif rating > 65:
+        ratingname = "Epic"
+    elif rating > 60:
+        ratingname = "Superior"
+    elif rating > 55:
+        ratingname = "Ornate"
+    elif rating > 50:
+        ratingname = "Distinguished"
+    elif rating > 45:
+        ratingname = "Sturdy"
+    elif rating > 40:
+        ratingname = "Notable"
+    elif rating > 35:
+        ratingname = "Uncommon"
+    else:
+        ratingname = "Common"
 
+    suffixes = ["of Power", "of Agility", "of Strength", "of Wisdom", "of Resilience", "of Fortitude", "of Endurance",
+                "of Protection", "of the Guardian", "of the Sentinel", "of the Protector", "of the Defender",
+                "of the Champion", "of the Conqueror", "of the Vanquisher", "of the Slayer", "of the Hunter",
+                "of the Beastmaster", "of the Warlord", "of the Berserker", "of the Gladiator", "of the Duelist",
+                "of the Assassin", "of the Rogue", "of the Trickster", "of the Shadow", "of the Nightblade",
+                "of the Phantom", "of the Specter", "of the Wraith", "of the Revenant", "of the Lich",
+                "of the Necromancer", "of the Warlock", "of the Sorcerer", "of the Wizard", "of the Mage"]
+
+    randomsuffix = str(random.choice(suffixes)) # Choose a random suffix from the list
+
+    weaponname = str(f"{ratingname} {type2n} {randomsuffix}") #name of weapon with AP
+
+    return weaponname

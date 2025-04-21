@@ -70,13 +70,13 @@ def speedgen(type2, AP):
     if type2 == "Launcher":
         typemultiplier = random.randint(40, 50)
     elif type2 == "Rifle" or "Warhammer" or "Axe" or "Greatsword" or "Longbow":
-        typemultiplier random.randint(17, 20)
+        typemultiplier = random.randint(17, 20)
     elif type2 == "Carbine" or "Bow" or "Polearm" or "Lance" or "Spear":
-        typemultiplier random.randint(14, 16)
+        typemultiplier = random.randint(14, 16)
     elif type2 == "Pistol" or "Dagger" or "Blade" or "Sword" or "Crossbow":
-        typemultiplier random.randint(9, 13)
+        typemultiplier = random.randint(9, 13)
     elif type2 == "Duster" or "Knuckler" or "Fist":
-        typemultiplier random.randint(5, 10)
+        typemultiplier = random.randint(5, 10)
     if AP == "Heavy":
         APmultiplier = random.randint(17, 20)
     elif AP == "Medium":
@@ -89,9 +89,9 @@ def speedgen(type2, AP):
     TM = typemultiplier * 2
     APM = APmultiplier * 2
 
-    provspeed = float(((APmultiplier + typemultiplier) * 3) / 60)
-    finalspeed = "{:.1f}".format(provspeed)
-    return finalspeed
+    provspeed = float(((TM + APM) * 3) / 60)
+
+    return provspeed
 
 '''def accuracygen(type2):
     """Generates a random accuracy value based on type2."""
@@ -264,5 +264,46 @@ class weapon:
         self.special = special if special is not None else specialgen(self.type2)
         self.name = name if name is not None else generateWname(self.type2, self.AP, self.rating, self.slot)
 
+def generateweapon():
+    """Generates a random weapon object."""
+    return weapon(None, None, None, None, None, None, None,
+                  None, None, None, None, None, None, None,
+                  None, None)
 
+
+def printweapon(weapon_item):
+    """Prints the weapon object."""
+    print("Weapon Name: " + weapon_item.name)
+    print("Weapon Type: " + weapon_item.type)
+    print("Weapon Type2: " + weapon_item.type2)
+    print("Weapon AP: " + weapon_item.AP)
+    print("Weapon Damage Type: " + weapon_item.dmgtype)
+    print("Weapon Speed: " + str(weapon_item.Speed))
+    print("Weapon Accuracy: " + str(weapon_item.Accuracy))
+    print("Weapon Max Damage: " + str(weapon_item.Maxdmg))
+    print("Weapon Min Damage: " + str(weapon_item.Mindmg))
+    print("Weapon Crit Chance: " + str(weapon_item.critchance))
+    print("Weapon Crit Damage: " + str(weapon_item.critdamage))
+    print("Weapon Slot: " + weapon_item.slot)
+    print("Weapon Condition: " + str(weapon_item.condition))
+    print("Weapon Owner: " + weapon_item.owner)
+    print("Weapon Special: " + weapon_item.special)
+    print("Weapon Rating: " + str(weapon_item.rating))
+
+def saveweapon(self):
+    """Saves the weapon object to a database."""
+    conn = sqlite3.connect('game.db')
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO weapons (name, type, type2, AP, dmgtype, Speed, Accuracy,"
+    "Maxdmg, Mindmg, critchance, critdamage, slot, condition, owner, special, rating)"
+    "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",(self.name, self.type, self.type2, self.AP, self.dmgtype,
+    self.Speed, self.Accuracy, self.Maxdmg, self.Mindmg, self.critchance, self.critdamage, self.slot,
+    self.condition, self.owner, self.special, self.rating))
+    conn.commit()
+    conn.close()
+
+for _ in range (50):
+    weapon_item = generateweapon()
+    printweapon(weapon_item)
+    saveweapon(weapon_item)
 
