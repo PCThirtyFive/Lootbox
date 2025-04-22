@@ -195,3 +195,71 @@ def generateWname(type2, AP, rating, slot):
     weaponname = str(f"{ratingname} {type2n} {randomsuffix}") #name of weapon with AP
 
     return weaponname
+
+def playernamegen(name2):
+
+    name1 = ["Horned", "Spiked", "Armoured", "Camouflaged","Fanged","Clawed","Rabid","Venomous",
+             "Toxic","Ferocious","Poisonous","Feral","Fierce","Savage","Brutal","Emberous",
+             "Dangerous","Ravenous","Destructive","Wild","Parasitic","Vicious","Gigantic","Ugly",
+             "Docile","Sleepy","Tame","Gigantic","Dwarf","Primal","Carnivorous","Murderous","Petrified",
+             "Crazed","Enraged","Divine","Repulsive","Decaying", "Volatile", "Tusked","Preying","Winged","Undead",
+             "Putrid","Abyssal","Aquatic","Infernal","Stinking","Awakened","Risen","Crystal","Metal","Synthetic",
+             "Genetically Engineered","Ivory","Putrid","Cyborg","Enhanced","Plagued","Infectious"]
+
+
+
+    jnl1 = ["Warp", "Grime", "Tangle", "Taint", "Vile", "Umbra", "Demon", "Decay", "Haunt", "Acid", "Smog", "Plague",
+        "Abyss", "Mold","Thorn","Fog","Mist","Strong","Chaos","Aqua","Sky","Space","Ember","Ice","Snow","Hyper",
+        "Nether","Stench","Gut","Grim","Death","Broken","Xeno","Cyber","Danger","Demon","Omega","Thunder",]
+
+    jnl2 = ["boy","girl","fiend","fang","bane","tooth","hand","claw","crackle","bug","mask","tusk","wing","snare",
+        "mech","foot","crackle","beast","spawn","mouth","hood","hunter","corpse","pot","woman","man","rust","stroke",
+        'strike',"ling","lich","brute","paw","swine"]
+
+    jns1 = ["the Destroyer", "the Infamous", "the Light Bringer", "the World Killer", "the Great", "the Notorious",
+        "the Desolator", "the Apocalpse Bringer", "the Cold Blooded", "the honourable", "the Dragonslayer",
+        "the Dawn Bringer", "the Galatic Scourge", "the Invader", "the Greedy", "the Renown", "the Deathstroke",
+        "Ruler of worlds", "of Azemoth", "the Devine", "the Judgement of Nature", "the Killer", "the collapser",
+        "the Eternal", "the Executioner", "the Purger of Worlds", "the Galaxy Eater", "the Galactic Terror",
+        "the Fedaykin Warrior", "the Avenger", "the Justice Bringer", "the Shadow Walker", "the Night Stalker",
+        "the Swordmaster of Ginaz", "the Stormrider", "the Ravenous", "the Volatile", "the Repulsive", "the Putrid",
+        "the Vampire King", "the Unbroken", "the Tainted", "the Creator"]
+
+    a = random.randint(1,3)
+
+    if type == "Human":
+        if a == 1:
+            ng = str(random.choice(jnl1))+str(random.choice(jnl2))+" the "+str(random.choice(name1))+ \
+             " "+str(name2)
+            return str(ng)
+        if a == 2:
+            ng = str(random.choice(jnl1))+str(random.choice(jnl2))+" the "+str(name2)
+            return str(ng)
+        if a == 3:
+            ng = str(random.choice(name1))+" "+str(name2)
+            return str(ng)
+
+    else:
+        b = random.randint(1,6)
+        if b ==4:
+            ng = str(random.choice(jnl1))+str(random.choice(jnl2))
+            return str(ng)
+        elif b == 5:
+            ng = str(random.choice(jnl1))+str(random.choice(jnl2))+" "+str(random.choice(jns1))
+            return str(ng)
+        elif b == 6:
+            ng = str(random.choice(jnl1))+str(random.choice(jnl2))+" the "+str(random.choice(name1))
+            return str(ng)
+        elif b == 1:
+            ng = str(random.choice(jnl1))+str(random.choice(jnl2))+" the "+str(random.choice(name1))+ \
+                 " "+str(name2)
+            return str(ng)
+        elif b == 2:
+            ng = str(random.choice(jnl1))+str(random.choice(jnl2))+" the "+str(name2)
+            return str(ng)
+        elif b == 3:
+            ng = str(random.choice(name1))+" "+str(name2)
+            return str(ng)
+
+
+

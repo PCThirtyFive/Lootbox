@@ -59,5 +59,48 @@ class Database:
         conn.commit()
         conn.close()
 
+    #create a table for storing player objects
+        conn = sqlite3.connect(self.db_name)
+        cursor = conn.cursor()
+        cursor.execute('''CREATE TABLE IF NOT EXISTS players (
+                player_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                type TEXT,
+                uid TEXT,
+                race TEXT,
+                rb1 TEXT,
+                rb2 TEXT,
+                rb3 TEXT,
+                name TEXT,
+                hp INTEGER,
+                head INTEGER,
+                shoulder INTEGER,
+                arm INTEGER,
+                hand INTEGER,
+                chest INTEGER,
+                pants INTEGER,
+                boots INTEGER,
+                mainhand INTEGER,
+                offHand INTEGER,
+                jwl1 INTEGER,
+                jwl2 INTEGER,
+                arminv TEXT,
+                weaponinv TEXT,
+                jwlinv TEXT,
+                iteminv TEXT,
+                lightranged TEXT,
+                medranged TEXT,
+                heavyranged TEXT,
+                launchers TEXT,
+                unarmed TEXT,
+                lightmelee TEXT,
+                mediummelee TEXT,
+                heavymelee TEXT,
+                armrep INTEGER,
+                weaponrep INTEGER,
+                rating INTEGER)''')
+
+        conn.commit()
+        conn.close()
+
 
 Database()

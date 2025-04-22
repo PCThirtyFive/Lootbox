@@ -242,7 +242,9 @@ def specialgen(type2):
         return random.choice(["Quick Jab", "Heavy Punch", "Fist Slam"])
 
 class weapon:
-    def __init__(self, type, type2, condition, AP, dmgtype, Speed, Accuracy, Mindmg, Maxdmg, critchance, critdamage, slot, special, owner, name, rating):
+    def __init__(self, type=None, type2=None, condition=None, AP=None, dmgtype=None, Speed=None, Accuracy=None,
+                 Mindmg=None, Maxdmg=None, critchance=None, critdamage=None, slot=None, special=None, owner=None,
+                 name=None, rating=None, lrid=None):
         self.type = type if type is not None else random.choice(["Ranged", "Melee"])
         self.type2 = type2 if type2 is not None else type2gen(self.type)
 
@@ -264,11 +266,9 @@ class weapon:
         self.special = special if special is not None else specialgen(self.type2)
         self.name = name if name is not None else generateWname(self.type2, self.AP, self.rating, self.slot)
 
-def generateweapon():
-    """Generates a random weapon object."""
-    return weapon(None, None, None, None, None, None, None,
-                  None, None, None, None, None, None, None,
-                  None, None)
+        self.lrid = lrid if lrid is not None else saveweapon(self)
+
+
 
 
 def printweapon(weapon_item):
@@ -300,10 +300,12 @@ def saveweapon(self):
     self.Speed, self.Accuracy, self.Maxdmg, self.Mindmg, self.critchance, self.critdamage, self.slot,
     self.condition, self.owner, self.special, self.rating))
     conn.commit()
+    last_row_id = cursor.lastrowid
     conn.close()
+    return last_row_id
 
-for _ in range (50):
-    weapon_item = generateweapon()
-    printweapon(weapon_item)
-    saveweapon(weapon_item)
+
+
+
+
 

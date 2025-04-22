@@ -114,46 +114,53 @@ def modifiervalgen(modifier, provrating):
 
 def vulngen(specproc):
     """
-    Generates a random number of vulnerability for the armour item 0-3:
+    Generates a random number of vulnerabilities for the armour item (0-3).
     """
     vulnist = ["Kinetic", "Heat", "Energy", "Projectile", "Electric", "Cold", "Acid", "Explosive", "Exotic", "Dark",
-               "Sonic", "Water", "Devine"]
+               "Sonic", "Water", "Divine"]
     specproc1 = specproc
     # Remove the special proc from the list of possible vulnerabilities
     if specproc1 is not None:
         if isinstance(specproc1, list):
             for proc in specproc1:
-                vulnist.remove(proc)
+                if proc in vulnist:  # Check if proc exists in vulnist
+                    vulnist.remove(proc)
         else:
-            vulnist.remove(specproc1)
+            if specproc1 in vulnist:  # Check if specproc1 exists in vulnist
+                vulnist.remove(specproc1)
     vlng = random.randint(0, 100)
-    if vlng < 5: # 5% chance of getting no vulnerability
+    if vlng < 5:  # 5% chance of getting no vulnerability
         return None
-    elif vlng < 55: # 40% chance of getting one vulnerability
+    elif vlng < 55:  # 50% chance of getting one vulnerability
         return random.choice(vulnist)
-    else: # 45% chance of getting two vulnerabilities
+    else:  # 45% chance of getting two vulnerabilities
         return random.sample(vulnist, 2)
 
 def basegen(specproc, vuln):
     """
-    Generates a base resistance for the armour item.
+    Generates base resistances for the armour item.
     """
-    # Define possible base resistances
-    base_resistances = ["Kinetic", "Heat","Energy", "Projectile", "Electric","Cold","Acid","Explosive","Exotic","Dark","Sonic","Water","Devine"]
-    # Remove the special proc and vulnerability from the list of possible resistances
+    base_resistances = ["Kinetic", "Heat", "Energy", "Projectile", "Electric", "Cold", "Acid", "Explosive", "Exotic",
+                        "Dark", "Sonic", "Water", "Divine"]
+    # Remove special procs from the list of base resistances
     if specproc is not None:
         if isinstance(specproc, list):
             for proc in specproc:
-                base_resistances.remove(proc)
+                if proc in base_resistances:  # Check if proc exists in base_resistances
+                    base_resistances.remove(proc)
         else:
-            base_resistances.remove(specproc)
+            if specproc in base_resistances:  # Check if specproc exists in base_resistances
+                base_resistances.remove(specproc)
+    # Remove vulnerabilities from the list of base resistances
     if vuln is not None:
         if isinstance(vuln, list):
             for proc in vuln:
-                base_resistances.remove(proc)
+                if proc in base_resistances:  # Check if proc exists in base_resistances
+                    base_resistances.remove(proc)
         else:
-            base_resistances.remove(vuln)
-    # Choose a random base resistance from the list
+            if vuln in base_resistances:  # Check if vuln exists in base_resistances
+                base_resistances.remove(vuln)
+    # Generate a random base resistance
     return base_resistances
 
 def setbonuscalc(provrating):
@@ -179,7 +186,6 @@ def save_to_db(self):
     """
     conn = sqlite3.connect("game.db")
     cursor = conn.cursor()
-    owner = "player1"
     # Insert the armour item data
 
     #serialize lists to json strings
@@ -192,10 +198,12 @@ def save_to_db(self):
              "VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                    (self.name, self.slot, self.type, self.typeval, specproc_json, self.specres, baseproc_json, self.baseres, vuln_json,
                     self.condition, self.socket, self.modifiers1, self.modifiers2, self.modifiers1v, self.modifiers2v, self.setbonus,
-                    self.rating,owner))
+                    self.rating,self.owner))
     # Commit the changes and close the connection
     conn.commit()
+    lasta_row_id = cursor.lastrowid
     conn.close()
+    return lasta_row_id
 
 
 
@@ -203,8 +211,11 @@ class armour:
     """
     Represents an armour item with various attributes.
     """
-    def __init__(self, name=None, slot=None, type=None, typeval=None, specproc=None, specres=None, baseproc=None, baseres=None, vuln=None, condition=None, socket=None, modifiers1=None, modifiers2=None, modifiers1v=None, modifiers2v=None, setbonus=None, rating=None):
+    def __init__(self, slot=None, owner=None, name=None, type=None, typeval=None, specproc=None, specres=None,
+                     baseproc=None, baseres=None, vuln=None, condition=None, socket=None, modifiers1=None,
+                     modifiers2=None, modifiers1v=None, modifiers2v=None, setbonus=None, rating=None, lrid=None):
 
+        self.owner = owner if owner is not None else "Market"
         self.type = type if type is not None else genarmourtype()
         self.typeval = armourtypes[self.type]
         self.slot = slot if slot is not None else random.choice(slots)
@@ -270,19 +281,13 @@ class armour:
                                   ((setbonus_count / 1) * 3)) / ((9 + (specproc_count * 3) + (basecount * 3))) * 100)
 
         self.name = name if name is not None else generateAname(self.type,self.slot,self.setbonus,self.rating,self.specproc)
-
-        save_to_db(self)
-
+        self.lrid = lrid if lrid is not None else save_to_db(self)
 
 
-def generate_armour():
-    """
-    Generates a random armour item.
-    """
-    # Generate a random armour item
-    return armour(None, None, None, None, None, None, None,
-                  None, None, None, None, None, None, None,
-                  None, None, None)
+
+
+
+
 def print_armour(armour_item):
     print(f"Name: {armour_item.name}")
     print(f"Slot: {armour_item.slot}")
@@ -300,11 +305,6 @@ def print_armour(armour_item):
     print(f"Set Bonus: {armour_item.setbonus}")
     print(f"Rating: {armour_item.rating}")
 
-
-for _ in range(50):
-    print_armour(generate_armour()) #generate and print a random armour item
-
-#write the generated armour item to a json file and store in the database
 
 
 
