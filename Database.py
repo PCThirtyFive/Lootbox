@@ -102,5 +102,16 @@ class Database:
         conn.commit()
         conn.close()
 
+        conn = sqlite3.connect(self.db_name)
+        cursor = conn.cursor()
+        cursor.execute('''CREATE TABLE IF NOT EXISTS stats (
+                uid TEXT,
+                name TEXT,
+                wins INTEGER,
+                losses INTEGER,
+                rating INTEGER)''')
+        conn.commit()
+        conn.close()
+
 
 Database()

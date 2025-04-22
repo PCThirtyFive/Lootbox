@@ -4,6 +4,12 @@ import sqlite3
 import time
 import json
 import PlayerGen
+
+def generateplayers():
+    for _ in range (50):
+        PlayerGen.HumanPlayer()
+        PlayerGen.cpuplayer()
+        FightLoop()
 def get_players():
     """
     Prints each player's name, armour name and rating, and weapon name and rating.
@@ -33,7 +39,7 @@ def obtainplayerdata():
     conn = sqlite3.connect("game.db")
     cursor = conn.cursor()
     # Query player1 data
-    cursor.execute("SELECT head, shoulder, chest, arm, hand, pants, boots, mainhand, rating FROM players WHERE uid = ?", (player1id,))
+    cursor.execute("SELECT head, shoulder, chest, arm, hand, pants, boots, mainhand, rating, hp FROM players WHERE uid = ?", (player1id,))
     player1data = cursor.fetchone()
     p1head = player1data[0]
     p1shoulder = player1data[1]
@@ -44,9 +50,10 @@ def obtainplayerdata():
     p1boots = player1data[6]
     p1mainhand = player1data[7]
     p1rating = player1data[8]
-    Player1Items = {"Head": p1head, "Shoulder": p1shoulder, "Arm": p1arm, "Hand": p1hand, "Chest": p1chest, "Pants": p1pants, "Boots": p1boots, "Mainhand": p1mainhand, "Rating": p1rating}
+    p1hp = player1data[9]
+    Player1Items = {"Head": p1head, "Shoulder": p1shoulder, "Arm": p1arm, "Hand": p1hand, "Chest": p1chest, "Pants": p1pants, "Boots": p1boots, "Mainhand": p1mainhand, "Rating": p1rating, "HP": p1hp}
     # Query player2 data
-    cursor.execute("SELECT head, shoulder, chest, arm, hand, pants, boots, mainhand, rating FROM players WHERE uid = ?", (player2id,))
+    cursor.execute("SELECT head, shoulder, chest, arm, hand, pants, boots, mainhand, rating, hp FROM players WHERE uid = ?", (player2id,))
     player2data = cursor.fetchone()
     p2head = player2data[0]
     p2shoulder = player2data[1]
@@ -57,8 +64,65 @@ def obtainplayerdata():
     p2boots = player2data[6]
     p2mainhand = player2data[7]
     p2rating = player2data[8]
-    Player2Items = {"Head": p2head, "Shoulder": p2shoulder, "Arm": p2arm, "Hand": p2hand, "Chest": p2chest, "Pants": p2pants, "Boots": p2boots, "Mainhand": p2mainhand, "Rating": p2rating}
-    return Player1Items, Player2Items, player1id, player2id
+    p2hp = player2data[9]
+    Player2Items = {"Head": p2head, "Shoulder": p2shoulder, "Arm": p2arm, "Hand": p2hand, "Chest": p2chest, "Pants": p2pants, "Boots": p2boots, "Mainhand": p2mainhand, "Rating": p2rating, "HP": p2hp}
+    cursor.execute("SELECT AP, type002, Mindmg, Maxdmg, Speed, dmgtype, critchance, critdamage FROM weapons WHERE owner = ?", (player1id,))
+
+    #getweapon data
+    playeroneweaponex = cursor.fetchone()
+    player1wpn = {"AP": playeroneweaponex[0], "Type": playeroneweaponex[1], "MinDmg": playeroneweaponex[2], "MaxDmg": playeroneweaponex[3], "Speed": playeroneweaponex[4], "DmgType": playeroneweaponex[5], "CritChance": playeroneweaponex[6], "CritDamage": playeroneweaponex[7]}
+    cursor.execute("SELECT AP, type002, Mindmg, Maxdmg, Speed, dmgtype, critchance, critdamage FROM weapons WHERE owner = ?", (player2id,))
+    playertwoweaponex = cursor.fetchone()
+    player2wpn = {"AP": playertwoweaponex[0], "Type": playertwoweaponex[1], "MinDmg": playertwoweaponex[2], "MaxDmg": playertwoweaponex[3], "Speed": playertwoweaponex[4], "DmgType": playertwoweaponex[5], "CritChance": playertwoweaponex[6], "CritDamage": playertwoweaponex[7]}
+
+    #get armour data
+    cursor.execute("SELECT typeval, specproc, specres, baseres, vuln, FROM armour WHERE owner = ? and slot = ?", (player1id, p1arm))
+    p1armd = cursor.fetchall()
+    p1armdata = {"Slot": "Arm", "TypeVal": p1armd[0], "SpecProc": p1armd[1], "SpecRes": p1armd[2], "BaseRes": p1armd[3], "Vuln": p1armd[4]}
+    cursor.execute("SELECT typeval, specproc, specres, baseres, vuln FROM armour WHERE owner = ? and slot = ?", (player1id, p1hand))
+    p1handd = cursor.fetchall()
+    p1handdata = {"Slot": "Hand", "TypeVal": p1handd[0], "SpecProc": p1handd[1], "SpecRes": p1handd[2], "BaseRes": p1handd[3], "Vuln": p1handd[4]}
+    cursor.execute("SELECT typeval, specproc, specres, baseres, vuln FROM armour WHERE owner = ? and slot = ?", (player1id, p1chest))
+    p1chestd = cursor.fetchall()
+    p1chestdata = {"Slot": "Chest", "TypeVal": p1chestd[0], "SpecProc": p1chestd[1], "SpecRes": p1chestd[2], "BaseRes": p1chestd[3], "Vuln": p1chestd[4]}
+    cursor.execute("SELECT typeval, specproc, specres, baseres, vuln FROM armour WHERE owner = ? and slot = ?", (player1id, p1pants))
+    p1pantsd = cursor.fetchall()
+    p1pantsdata = {"Slot": "Pants", "TypeVal": p1pantsd[0], "SpecProc": p1pantsd[1], "SpecRes": p1pantsd[2], "BaseRes": p1pantsd[3], "Vuln": p1pantsd[4]}
+    cursor.execute("SELECT typeval, specproc, specres, baseres, vuln FROM armour WHERE owner = ? and slot = ?", (player1id, p1boots))
+    p1bootsd = cursor.fetchall()
+    p1bootsdata = {"Slot": "Boots", "TypeVal": p1bootsd[0], "SpecProc": p1bootsd[1], "SpecRes": p1bootsd[2], "BaseRes": p1bootsd[3], "Vuln": p1bootsd[4]}
+    cursor.execute("SELECT typeval, specproc, specres, baseres, vuln FROM armour WHERE owner = ? and slot = ?", (player1id, p1head))
+    p1headd = cursor.fetchall()
+    p1headdata = {"Slot": "Head", "TypeVal": p1headd[0], "SpecProc": p1headd[1], "SpecRes": p1headd[2], "BaseRes": p1headd[3], "Vuln": p1headd[4]}
+    cursor.execute("SELECT typeval, specproc, specres, baseres, vuln FROM armour WHERE owner = ? and slot = ?", (player1id, p1shoulder))
+    p1shoulderd = cursor.fetchall()
+    p1shoulderdata = {"Slot": "Shoulder", "TypeVal": p1shoulderd[0], "SpecProc": p1shoulderd[1], "SpecRes": p1shoulderd[2], "BaseRes": p1shoulderd[3], "Vuln": p1shoulderd[4]}
+
+    cursor.execute("SELECT typeval, specproc, specres, baseres, vuln, FROM armour WHERE owner = ? and slot = ?", (player2id, p2arm))
+    p2armd = cursor.fetchall()
+    p2armdata = {"Slot": "Arm", "TypeVal": p2armd[0], "SpecProc": p2armd[1], "SpecRes": p2armd[2], "BaseRes": p2armd[3], "Vuln": p2armd[4]}
+    cursor.execute("SELECT typeval, specproc, specres, baseres, vuln FROM armour WHERE owner = ? and slot = ?", (player2id, p2hand))
+    p2handd = cursor.fetchall()
+    p2handdata = {"Slot": "Hand", "TypeVal": p2handd[0], "SpecProc": p2handd[1], "SpecRes": p2handd[2], "BaseRes": p2handd[3], "Vuln": p2handd[4]}
+    cursor.execute("SELECT typeval, specproc, specres, baseres, vuln FROM armour WHERE owner = ? and slot = ?", (player2id, p2chest))
+    p2chestd = cursor.fetchall()
+    p2chestdata = {"Slot": "Chest", "TypeVal": p2chestd[0], "SpecProc": p2chestd[1], "SpecRes": p2chestd[2], "BaseRes": p2chestd[3], "Vuln": p2chestd[4]}
+    cursor.execute("SELECT typeval, specproc, specres, baseres, vuln FROM armour WHERE owner = ? and slot = ?", (player2id, p2pants))
+    p2pantsd = cursor.fetchall()
+    p2pantsdata = {"Slot": "Pants", "TypeVal": p2pantsd[0], "SpecProc": p2pantsd[1], "SpecRes": p2pantsd[2], "BaseRes": p2pantsd[3], "Vuln": p2pantsd[4]}
+    cursor.execute("SELECT typeval, specproc, specres, baseres, vuln FROM armour WHERE owner = ? and slot = ?", (player2id, p2boots))
+    p2bootsd = cursor.fetchall()
+    p2bootsdata = {"Slot": "Boots", "TypeVal": p2bootsd[0], "SpecProc": p2bootsd[1], "SpecRes": p2bootsd[2], "BaseRes": p2bootsd[3], "Vuln": p2bootsd[4]}
+    cursor.execute("SELECT typeval, specproc, specres, baseres, vuln FROM armour WHERE owner = ? and slot = ?", (player2id, p2head))
+    p2headd = cursor.fetchall()
+    p2headdata = {"Slot": "Head", "TypeVal": p2headd[0], "SpecProc": p2headd[1], "SpecRes": p2headd[2], "BaseRes": p2headd[3], "Vuln": p2headd[4]}
+    cursor.execute("SELECT typeval, specproc, specres, baseres, vuln FROM armour WHERE owner = ? and slot = ?", (player2id, p2shoulder))
+    p2shoulderd = cursor.fetchall()
+    p2shoulderdata = {"Slot": "Shoulder", "TypeVal": p2shoulderd[0], "SpecProc": p2shoulderd[1], "SpecRes": p2shoulderd[2], "BaseRes": p2shoulderd[3], "Vuln": p2shoulderd[4]}
+
+    return (Player1Items, Player2Items, player1id, player2id, player1wpn, player2wpn, p1armdata, p1handdata, p1chestdata,
+            p1pantsdata, p1bootsdata, p1headdata, p1shoulderdata, p2armdata, p2handdata, p2chestdata, p2pantsdata,
+            p2bootsdata, p2headdata, p2shoulderdata)
 
 
 def Damagepool(type2):
@@ -129,12 +193,29 @@ Player2Offhandslot = 9
 
 
 
-def Fight():
+def FightLoop():
     importeddata = obtainplayerdata()
     player1items = importeddata[0]
     player2items = importeddata[1]
     player2 = importeddata[3]
     player1 = importeddata[2]
+    player1wpn = importeddata[4]
+    player2wpn = importeddata[5]
+    p1armdata = importeddata[6]
+    p1handdata = importeddata[7]
+    p1chestdata = importeddata[8]
+    p1pantsdata = importeddata[9]
+    p1bootsdata = importeddata[10]
+    p1headdata = importeddata[11]
+    p1shoulderdata = importeddata[12]
+    p2armdata = importeddata[13]
+    p2handdata = importeddata[14]
+    p2chestdata = importeddata[15]
+    p2pantsdata = importeddata[16]
+    p2bootsdata = importeddata[17]
+    p2headdata = importeddata[18]
+    p2shoulderdata = importeddata[19]
+
 
 
 
