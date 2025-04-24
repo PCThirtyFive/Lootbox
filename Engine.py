@@ -16,7 +16,7 @@ def generateplayers():
 
     for uid, name, rating in players:
         cursor.execute(
-            "INSERT OR IGNORE INTO stats (uid, name, wins, losses, rating) VALUES (?, ?, ?, ?, ?)",
+            "INSERT INTO stats (uid, name, wins, losses, rating) VALUES (?, ?, ?, ?, ?)",
             (uid, name, 0, 0, rating),
         )
     conn.commit()
@@ -92,16 +92,18 @@ def obtainplayerdata():
     playertwoweaponex = cursor.fetchone()
     player2wpn = {"AP": playertwoweaponex[0], "Type": playertwoweaponex[1], "MinDmg": playertwoweaponex[2], "MaxDmg": playertwoweaponex[3], "Speed": playertwoweaponex[4], "DmgType": playertwoweaponex[5], "CritChance": playertwoweaponex[6], "CritDamage": playertwoweaponex[7], "Name": playertwoweaponex[8]}
     #get player data
-    cursor.execute("SELECT hp, name, rating FROM players WHERE uid = ?", (player1id,))
+    cursor.execute("SELECT hp, name, rating, encumberance FROM players WHERE uid = ?", (player1id,))
     p1results = cursor.fetchone()
     player1hp = p1results[0]
     player1name = p1results[1]
     p1rating = p1results[2]
-    cursor.execute("SELECT hp, name, rating FROM players WHERE uid = ?", (player2id,))
+    cursor.execute("SELECT hp, name, rating,encumberance FROM players WHERE uid = ?", (player2id,))
     p2results = cursor.fetchone()
     player2hp = p2results[0]
     player2name = p2results[1]
     p2rating = p2results[2]
+    p1encumberance = p1results[3]
+    p2encumberance = p2results[3]
 
     #get stats data
     cursor.execute("SELECT wins, losses FROM stats WHERE uid = ?", (player1id,))
@@ -114,7 +116,8 @@ def obtainplayerdata():
     p2losses = int(p2results[1])
 
     conn.close()
-    return (player1id, player2id, player1wpn, player2wpn, player1hp, player2hp, player1name, player2name, p1rating, p2rating, p1wins, p1losses, p2wins, p2losses)
+    return (player1id, player2id, player1wpn, player2wpn, player1hp, player2hp, player1name, player2name,
+            p1rating, p2rating, p1wins, p1losses, p2wins, p2losses,p1encumberance, p2encumberance)
 
 def damagecalc(attackerid, attackerwpn, defenderid):
     crit = 0
@@ -157,10 +160,16 @@ def damagecalc(attackerid, attackerwpn, defenderid):
     cursor.execute("SELECT typeval, specproc, specres, baseres, vuln, name FROM armour WHERE owner = ? and slot = ?", (defenderid, slotdef,))
     defenderdata = cursor.fetchone()
     armapdef = defenderdata[0]
-    specproc = json.loads(defenderdata[1]) if not None else []
+    if defenderdata[1] is None:
+        specproc = ["Nil"]
+    else:    # Convert JSON string to Python object
+        specproc = json.loads(defenderdata[1])
     specres = defenderdata[2]
     baseres = defenderdata[3]
-    vuln = json.loads(defenderdata[4]) if not None else []
+    if defenderdata[4] is None:
+        vuln = ["Nil"]
+    else:
+        vuln = json.loads(defenderdata[4]) if not None else ["Nil"]
     aname = defenderdata[5]
     conn.close()
 
@@ -199,33 +208,36 @@ def FightLoop():
     p1losses = importeddata[11]
     p2wins = importeddata[12]
     p2losses = importeddata[13]
+    p1encumberance = importeddata[14]
+    p2encumberance = importeddata[15]
 
     print(f"The next fight is between {player1name} rated at {p1rating} with a record of {p1wins} wins and {p1losses} losses")
     print(" ")
     print(f"and {player2name} rated at {p2rating} with a record of {p2wins} wins and {p2losses} losses")
     print(" ")
     print("The fight will begin in 1 minute")
-    time.sleep(3)
+    time.sleep(0)
 
     while player1HP > 1 and player2HP > 1:
         if player1TurnSpeed == Turn or player1TurnSpeed < Turn:
             # Player 1's turn
             print(f"{player1name}s turn")
-            time.sleep(1)
+            time.sleep(0)
             print(f"Attacking with {p1wn}")
-            time.sleep(1)
+            time.sleep(0)
             results = damagecalc(player1, player1wpn, player2)
             damage = results[0]
             crit = "Critically hits for" if results[1] == 1 else "hits for"
             print(f"{player1name} {crit} {results[0]} {player1wpn["DmgType"]} damage to {player2name}")
-            time.sleep(1)
+            time.sleep(0)
             print(f"{player2name}'s {results[2]} absorbs {results[3]} damage")
-            time.sleep(1)
+            time.sleep(0)
             print(f"{player2name} loses {results[4]} HP")
             player2HP -= results[4]
             print(f"{player2name} has {player2HP} HP left")
-            time.sleep(1)
-            player1TurnSpeed += player1wpn["Speed"]
+            time.sleep(0)
+            #add player turnspeed
+            player1TurnSpeed += player1wpn["Speed"] + p1encumberance
             if player2HP <= 0:
                 print(f"{player2name} has been defeated")
                 winner = player1name
@@ -239,27 +251,27 @@ def FightLoop():
                 break
         elif player1TurnSpeed > Turn:
             print(f"{player1name} is preparing their attack")
-            time.sleep(1)
+            time.sleep(0)
 
         # Player 2's turn
         if player2TurnSpeed == Turn or player2TurnSpeed < Turn:
             print(f"{player2name}s turn")
-            time.sleep(1)
+            time.sleep(0)
             print(f"Attacking with {p2wn}")
-            time.sleep(1)
+            time.sleep(0)
             results = damagecalc(player2, player2wpn, player1)
             damage = results[0]
             crit = "Critically hits for" if results[1] == 1 else "hits for"
 
             print(f"{player2name} {crit} {results[0]} {player2wpn["DmgType"]} damage to {player1name}")
-            time.sleep(1)
+            time.sleep(0)
             print(f"{player1name}'s {results[2]} absorbs {results[3]} damage")
-            time.sleep(1)
+            time.sleep(0)
             print(f"{player1name} loses {results[4]} HP")
             player1HP -= results[4]
             print(f"{player1name} has {player1HP} HP left")
-            time.sleep(1)
-            player2TurnSpeed += player2wpn["Speed"]
+            time.sleep(0)
+            player2TurnSpeed += player2wpn["Speed"] + p2encumberance
             if player1HP <= 0:
                 print(f"{player1name} has been defeated")
                 loser = player1name
@@ -273,15 +285,14 @@ def FightLoop():
                 break
         elif player2TurnSpeed > Turn:
             print(f"{player2name} is preparing their attack")
-            time.sleep(1)
+            time.sleep(0)
         Turn += 1
 
     print(f"{winner} has defeated {loser}")
-    time.sleep(10)
+    time.sleep(1)
     FightLoop()
 
 FightLoop()
-
 
 
 

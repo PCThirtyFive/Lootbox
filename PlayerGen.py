@@ -67,6 +67,28 @@ def ratingscore(head, shoulder, arm, hand, chest, pants, boots, mainhand):
     avgrating = int(totalrating / 8)
     return avgrating
 
+def encum(head, shoulder, arm, hand, chest, pants, boots):
+    conn = sqlite3.connect("game.db")
+    cursor = conn.cursor()
+    cursor.execute("SELECT typeval FROM armour WHERE id = ?", (head,))
+    headrating = cursor.fetchone()
+    cursor.execute("SELECT typeval FROM armour WHERE id = ?", (shoulder,))
+    shoulderrating = cursor.fetchone()
+    cursor.execute("SELECT typeval FROM armour WHERE id = ?", (arm,))
+    armrating = cursor.fetchone()
+    cursor.execute("SELECT typeval FROM armour WHERE id = ?", (hand,))
+    handrating = cursor.fetchone()
+    cursor.execute("SELECT typeval FROM armour WHERE id = ?", (chest,))
+    chestrating = cursor.fetchone()
+    cursor.execute("SELECT typeval FROM armour WHERE id = ?", (pants,))
+    pantsrating = cursor.fetchone()
+    cursor.execute("SELECT typeval FROM armour WHERE id = ?", (boots,))
+    bootsrating = cursor.fetchone()
+#calculate the encumberance
+    #sum the ratings of all the items
+    totalencum = float((headrating[0] + shoulderrating[0] + armrating[0] + handrating[0] + chestrating[0] +
+                     pantsrating[0] + bootsrating[0]))
+    return totalencum
 
 
 
@@ -117,6 +139,8 @@ class HumanPlayer:
         self.rating = rating if rating is not None else ratingscore(self.head, self.shoulder, self.arm,
                                                                     self.hand, self.chest, self.pants, self.boots,
                                                                     self.mainhand)
+        self.encumberance = encum(self.head, self.shoulder, self.arm,
+                                 self.hand, self.chest, self.pants, self.boots)
         savep_to_db(self)
 
 
@@ -158,6 +182,8 @@ class cpuplayer:
         self.rating = rating if rating is not None else ratingscore(self.head, self.shoulder, self.arm,
                                                                     self.hand, self.chest, self.pants, self.boots,
                                                                     self.mainhand)
+        self.encumberance = encum(self.head, self.shoulder, self.arm,
+                                  self.hand, self.chest, self.pants, self.boots)
         savecpu_to_db(self)
 
 def savep_to_db(self):
@@ -185,13 +211,13 @@ def savep_to_db(self):
     cursor.execute("INSERT INTO players (type, uid, race, rb1, rb2, rb3, name, hp, head, shoulder, arm, hand, "
                    "chest, pants, boots, mainhand, offHand, jwl1, jwl2, arminv, weaponinv, jwlinv, iteminv, "
                    "lightranged, medranged, heavyranged, launchers, unarmed, lightmelee, mediummelee, heavymelee, "
-                   "armrep, weaponrep, rating) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                   "armrep, weaponrep, rating, encumberance) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                    (self.type, self.uid, self.race, self.rb1, self.rb2, self.rb3, self.name, self.hp,
                      self.head, self.shoulder, self.arm, self.hand, self.chest, self.pants, self.boots,
                         self.mainhand, self.offhand, self.jwl1, self.jwl2, jarminv, jweaponinv,
                         jjwlinv, jiteminv, jlightranged, jmedranged, jheavyranged, jlaunchers,
                         junarmed, jlightmelee, jmediummelee, jheavymelee, self.armrep, self.weaponrep,
-                        self.rating))
+                        self.rating, self.encumberance))
     conn.commit()  # Commit the changes
     conn.close()  # Close the connection
 
@@ -215,19 +241,18 @@ def savecpu_to_db(self):
     cursor.execute("INSERT INTO players (type, uid, race, rb1, rb2, rb3, name, hp, head, shoulder, arm, hand, "
                    "chest, pants, boots, mainhand, offHand, jwl1, jwl2,"
                    "lightranged, medranged, heavyranged, launchers, unarmed, lightmelee, mediummelee, heavymelee, "
-                   "rating) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+                   "rating, encumberance) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                    (self.type, self.uid, self.race, self.rb1, self.rb2, self.rb3, self.name, self.hp,
                     self.head, self.shoulder, self.arm, self.hand, self.chest, self.pants, self.boots,
                     self.mainhand, self.offhand, self.jwl1, self.jwl2, jlightranged, jmedranged, jheavyranged,
                     jlaunchers, junarmed, jlightmelee, jmediummelee, jheavymelee,
-                    self.rating))
+                    self.rating, self.encumberance))
     conn.commit()  # Commit the changes
     conn.close()  # Close the connection
 
 
     #insert the player into the database
-cpuplayer()
-HumanPlayer()
+
 
 
 

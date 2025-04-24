@@ -97,7 +97,8 @@ class Database:
                 heavymelee TEXT,
                 armrep INTEGER,
                 weaponrep INTEGER,
-                rating INTEGER)''')
+                rating INTEGER,
+                encumberance INTEGER)''')
 
         conn.commit()
         conn.close()
@@ -112,6 +113,7 @@ class Database:
                 rating INTEGER)''')
         conn.commit()
         conn.close()
+
 
 
 Database()
