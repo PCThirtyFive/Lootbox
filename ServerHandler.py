@@ -3,12 +3,12 @@ import threading
 import json
 import hashlib
 import secrets
-from sdatabase import sDatabase
+from sdatabase import UserDatabase
 
 HOST = "0.0.0.0"
 PORT = 5000
 
-db = sDatabase()
+db = UserDatabase()
 clients = {}
 tokens = {}
 connected_users = {}
@@ -32,6 +32,7 @@ def handle_client(conn, addr):
             action = request.get("action")
 
             if action == "register":
+
                 username = request.get("username")
                 password = request.get("password")
                 email = request.get("email")

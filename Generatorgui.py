@@ -1,6 +1,16 @@
 import customtkinter as ctk
+import Handleguicommands
+import socket
+import json
+from CTkMessagebox import CTkMessagebox
 
+SERVER_IP = "127.0.0.1"  # Change this if needed
+SERVER_PORT = 5000
+client = None
+token = None  # Token for authenticated sessions
+logged_in_user = None
 class GameApp(ctk.CTk):
+
     def __init__(self):
         super().__init__()
 
@@ -10,11 +20,29 @@ class GameApp(ctk.CTk):
         self.grid_rowconfigure(0, weight=1)
 
         self.current_screen = None
-        self.show_main_menu()
+        self.show_connect_screen()
 
     def clear_screen(self):
         if self.current_screen:
             self.current_screen.destroy()
+
+    #serveractions
+
+    def send_request(action, data):
+        """Send a request to the server and receive a response."""
+        global client
+        if client is None:
+            return {"status": "error", "message": "No connection to server"}
+
+        try:
+
+            data["action"] = action
+            client.sendall(json.dumps(data).encode())
+            response = json.loads(client.recv(1024).decode())
+            return response
+        except Exception as e:
+            print(f"[ERROR] Communication error: {e}")
+            return {"status": "error", "message": "Server communication failed"}
 
     def show_connect_screen(self):
         self.clear_screen()
@@ -25,11 +53,22 @@ class GameApp(ctk.CTk):
         self.current_screen.configure(border_width=2, border_color="black") # Added to configure
 
         # Added padding within the frame
-        connect_button = ctk.CTkButton(self.current_screen, text="Connect", command=self.show_login_screen)
+        connect_button = ctk.CTkButton(self.current_screen, text="Connect", command=self.connect_to_server)
         connect_button.grid(row=0, column=0, padx=20, pady=(20, 10))  # Added padding
 
         quit_button = ctk.CTkButton(self.current_screen, text="Quit", command=self.destroy)
         quit_button.grid(row=1, column=0, padx=20, pady=(10, 20))    # Added padding
+
+    def connect_to_server(self):
+        global client
+        try:
+            client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            client.connect((SERVER_IP, SERVER_PORT))
+            CTkMessagebox(title="Connection", message="Connection Successful", option_1="Close")
+            self.show_login_screen()
+        except Exception as e:
+            CTkMessagebox(title="Connection Failure", message="Connection Unsuccessful, Try again later", option_1="Close")
+            return self.show_connect_screen()
 
     def show_login_screen(self):
         self.clear_screen()
@@ -52,6 +91,10 @@ class GameApp(ctk.CTk):
         quit_button = ctk.CTkButton(self.current_screen, text="Quit", command=self.destroy)
         quit_button.grid(row=3, column=0, padx=20, pady=(10, 20))  # Added padding
 
+    #loginrequest
+
+    def
+
     def open_login_popup(self):
         login_popup = ctk.CTkToplevel(self)
         login_popup.title("Login")
@@ -70,6 +113,10 @@ class GameApp(ctk.CTk):
 
         confirm_button = ctk.CTkButton(login_popup, text="Confirm", command=self.show_main_menu) # Replace with actual login logic
         confirm_button.grid(row=2, column=0, columnspan=2, padx=20, pady=10)
+
+
+
+
 
 
 

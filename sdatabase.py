@@ -2,7 +2,7 @@ import sqlite3
 import hashlib
 
 
-class sDatabase:
+class UserDatabase:
     def __init__(self, db_name="users.db"):
         self.db_name = db_name
         self._create_tables()
